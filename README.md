@@ -7,4 +7,4 @@ creepereye](http://mazassumnida.wtf/api/v2/generate_badge?boj=creepereye)](https
 ## Algorithm
 * DP
   * [최장 증가 부분 수열(LIS) 알고리즘](https://apple-forest.tistory.com/159)
-  * [최장 공총 부분 수열(LCS) 알고리즘](https://apple-forest.tistory.com/160)
+  * [최장 공통 부분 수열(LCS) 알고리즘](https://apple-forest.tistory.com/160)
