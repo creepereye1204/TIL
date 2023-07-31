@@ -4,7 +4,7 @@
 빈은 인스턴스화된 객체를 의미하며, 스프링 컨테이너에 등록된 객체를 스프링 빈이라고 한다.
 @Bean 어노테이션을 통해 메서드로부터 반환된 객체를 스프링 컨테이너에 등록한다.
 EX)
-
+```java
 public class UserServiceImpl implements UserService {
     private UserDao userDao;
     
@@ -18,4 +18,4 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserById(id);
     }
 }
-
+```
