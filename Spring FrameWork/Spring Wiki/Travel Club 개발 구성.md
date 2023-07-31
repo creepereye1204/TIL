@@ -1,5 +1,5 @@
 
-## springframework의존성을 추가해줌
+## springframework 의존성을 추가
 
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
