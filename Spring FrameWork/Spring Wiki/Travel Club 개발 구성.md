@@ -1,11 +1,11 @@
 
-springframework의존성을 추가해줌
+## springframework의존성을 추가해줌
 
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    
 
     <groupId>io.namoosori.travelclub.spring</groupId>
     <artifactId>travelclub</artifactId>
@@ -30,14 +30,14 @@ springframework의존성을 추가해줌
 </project>
 
 
-Lombok을 추가함으로써 생산성 향상 ex) (Getter,Setter 함수 자동 선언)
+## Lombok을 추가함으로써 생산성 향상 ex) (Getter,Setter 함수 자동 선언)
 
 
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    
 
     <groupId>io.namoosori.travelclub.spring</groupId>
     <artifactId>travelclub</artifactId>
