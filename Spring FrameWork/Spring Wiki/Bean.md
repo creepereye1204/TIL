@@ -19,3 +19,12 @@ public class UserServiceImpl implements UserService {
     }
 }
 ```
+```xml
+<!-- UserDao Bean 등록 -->
+<bean id="userDao" class="com.example.dao.UserDaoImpl" />
+
+<!-- UserService Bean 등록 -->
+<bean id="userService" class="com.example.service.UserServiceImpl">
+    <property name="userDao" ref="userDao" />
+</bean>
+```
