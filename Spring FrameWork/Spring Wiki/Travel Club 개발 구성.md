@@ -1,12 +1,15 @@
 
 springframework의존성을 추가해줌
 
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
    <groupId>org.springframework</groupId>
    <artifactId>spring-context</artifactId>
    <version>5.3.0</version>
-
+</project>
 
 Lombok을 추가함으로써 생산성 향상 ex) (Getter,Setter 함수 자동 선언)
 
