@@ -17,5 +17,6 @@ dㄱㄷ
 # 0059
 ![image](https://github.com/creepereye1204/TIL/assets/112455232/e64bd559-bd1d-4919-a77d-61cda44ef305)
 
-
+# 1106
+일단 두점
 
