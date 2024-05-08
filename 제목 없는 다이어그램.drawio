@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-08T03:23:32.186Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="TglHgFhq96CkwMOgtkm0" version="24.3.1" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2024-05-08T03:32:07.764Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="p1U8RLrhwDLRka9hZJPn" version="24.3.1" type="github" pages="2">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="2345" dy="1040" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -90,7 +90,7 @@
             <mxPoint x="218" y="124" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="YsLUDtDBLBJ1gW5myyrI-18" value="&lt;span style=&quot;color: rgb(34, 34, 37); font-family: -apple-system, BlinkMacSystemFont, &amp;quot;Malgun Gothic&amp;quot;, &amp;quot;맑은 고딕&amp;quot;, helvetica, &amp;quot;Apple SD Gothic Neo&amp;quot;, helvetica, &amp;quot;나눔바른고딕 옛한글&amp;quot;, &amp;quot;NanumBarunGothic YetHangul&amp;quot;, sans-serif; font-size: 16px; letter-spacing: -0.3px; text-align: start;&quot;&gt;위원회 소집 및 회의&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="YsLUDtDBLBJ1gW5myyrI-18" value="&lt;span style=&quot;color: rgb(34, 34, 37); font-family: -apple-system, BlinkMacSystemFont, &amp;quot;Malgun Gothic&amp;quot;, &amp;quot;맑은 고딕&amp;quot;, helvetica, &amp;quot;Apple SD Gothic Neo&amp;quot;, helvetica, &amp;quot;나눔바른고딕 옛한글&amp;quot;, &amp;quot;NanumBarunGothic YetHangul&amp;quot;, sans-serif; font-size: 16px; letter-spacing: -0.3px; text-align: start;&quot;&gt;위원회 소집&amp;nbsp;&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="225" y="-21" width="80" height="175" as="geometry" />
         </mxCell>
         <mxCell id="YsLUDtDBLBJ1gW5myyrI-19" value="" style="endArrow=none;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=1;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="YsLUDtDBLBJ1gW5myyrI-4" target="YsLUDtDBLBJ1gW5myyrI-18">
@@ -121,6 +121,21 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="1258" y="213" as="sourcePoint" />
             <mxPoint x="1351" y="213" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YsLUDtDBLBJ1gW5myyrI-25" value="" style="endArrow=none;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="YsLUDtDBLBJ1gW5myyrI-4" target="YsLUDtDBLBJ1gW5myyrI-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="697" y="184" as="sourcePoint" />
+            <mxPoint x="253" y="284" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YsLUDtDBLBJ1gW5myyrI-26" value="&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial; font-size: 16px; letter-spacing: -0.3px;&quot;&gt;&lt;font face=&quot;-apple-system, BlinkMacSystemFont, Malgun Gothic, 맑은 고딕, helvetica, Apple SD Gothic Neo, helvetica, 나눔바른고딕 옛한글, NanumBarunGothic YetHangul, sans-serif&quot; color=&quot;#222225&quot;&gt;교수 회의&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="269" width="80" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="YsLUDtDBLBJ1gW5myyrI-27" value="" style="endArrow=none;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="YsLUDtDBLBJ1gW5myyrI-4" target="YsLUDtDBLBJ1gW5myyrI-26">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="245" as="sourcePoint" />
+            <mxPoint x="260" y="323" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
