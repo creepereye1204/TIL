@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-08T07:19:32.096Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="5y5tJJL1O1q40WHT38Zu" version="24.3.1" type="github">
+<mxfile host="app.diagrams.net" modified="2024-05-08T07:20:41.944Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="o2Brt0eiYeYiWOhOJUwB" version="24.3.1" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1032" dy="418" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -28,7 +28,7 @@
         <mxCell id="Qdt0QcJyTu_v9kI0_eWY-13" value="수윙스 접속" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="190" y="180" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="Qdt0QcJyTu_v9kI0_eWY-16" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Qdt0QcJyTu_v9kI0_eWY-12" target="Qdt0QcJyTu_v9kI0_eWY-46">
+        <mxCell id="Qdt0QcJyTu_v9kI0_eWY-16" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Qdt0QcJyTu_v9kI0_eWY-12" target="Qdt0QcJyTu_v9kI0_eWY-46">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="120" y="599.6" as="sourcePoint" />
             <mxPoint x="160" y="599.6" as="targetPoint" />
@@ -37,17 +37,17 @@
         <mxCell id="Qdt0QcJyTu_v9kI0_eWY-30" value="수강신청 시스템" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="280" y="570" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="Qdt0QcJyTu_v9kI0_eWY-33" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Qdt0QcJyTu_v9kI0_eWY-46" target="Qdt0QcJyTu_v9kI0_eWY-30">
+        <mxCell id="Qdt0QcJyTu_v9kI0_eWY-33" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Qdt0QcJyTu_v9kI0_eWY-46">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="240" y="599.6" as="sourcePoint" />
-            <mxPoint x="280" y="599.6" as="targetPoint" />
+            <mxPoint x="240" y="629.6" as="sourcePoint" />
+            <mxPoint x="280" y="630" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Qdt0QcJyTu_v9kI0_eWY-46" value="&lt;span style=&quot;color: rgb(34, 34, 37); font-family: -apple-system, BlinkMacSystemFont, &amp;quot;Malgun Gothic&amp;quot;, &amp;quot;맑은 고딕&amp;quot;, helvetica, &amp;quot;Apple SD Gothic Neo&amp;quot;, helvetica, &amp;quot;나눔바른고딕 옛한글&amp;quot;, &amp;quot;NanumBarunGothic YetHangul&amp;quot;, sans-serif; font-size: 16px; letter-spacing: -0.3px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;장바구니 에 있는 강의와 없는 강의 신청&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="160" y="580" width="80" height="40" as="geometry" />
+          <mxGeometry x="160" y="610" width="80" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Qdt0QcJyTu_v9kI0_eWY-56" value="&lt;span style=&quot;color: rgb(34, 34, 37); font-family: -apple-system, BlinkMacSystemFont, &amp;quot;Malgun Gothic&amp;quot;, &amp;quot;맑은 고딕&amp;quot;, helvetica, &amp;quot;Apple SD Gothic Neo&amp;quot;, helvetica, &amp;quot;나눔바른고딕 옛한글&amp;quot;, &amp;quot;NanumBarunGothic YetHangul&amp;quot;, sans-serif; font-size: 16px; letter-spacing: -0.3px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;로그인&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="160" y="480" width="80" height="40" as="geometry" />
+          <mxGeometry x="160" y="550" width="80" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Qdt0QcJyTu_v9kI0_eWY-57" value="" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Qdt0QcJyTu_v9kI0_eWY-56">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
