@@ -1,34 +1,33 @@
-from collections import deque
-
-
 mx = -1
 
-
-def bfs(graph, i):
-    global mx
-    cnt = 0
-    visited = [i]
-    q = deque([i])
-    while q:
-        v = q.popleft()
-        for node in graph[v]:
-
-            if node not in visited:
-                visited += [node]
-                cnt += 1
-                q += [node]
-    mx = max(cnt, mx)
-
-
 n = int(input())
+table = [list(input()) for _ in range(n)]
 graph = [[] for _ in range(n)]
-for j in range(n):
-    text = input()
-    for i in range(len(text)):
-        if text[i] == "Y":
+
+for i in range(n):
+    for j in range(n):
+        if table[i][j] == "Y" and i != j:
             graph[i] += [j]
             graph[j] += [i]
 
+
+def bfs(i):
+    global mx
+    visited = [i]
+    q = []
+    for node in graph[i]:
+        if node not in visited:
+            visited += [node]
+            q += [node]
+
+    for i in q:
+        for node in graph[i]:
+            if node not in visited:
+                visited += [node]
+    mx = max(mx, len(visited) - 1)
+
+
 for i in range(n):
-    bfs(graph, i)
+    bfs(i)
+
 print(mx)
