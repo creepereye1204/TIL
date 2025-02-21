@@ -1,29 +1,37 @@
-import sys
-
-sys.setrecursionlimit(10**9)
 n = int(input())
-visited = [False] * n
-rst = sys.maxsize
-graph = [list(map(int, input().split(" "))) for _ in range(n)]
+ground = [int(input()) for _ in range(n)]
+prior = sorted([[g, idx] for idx, g in enumerate(ground)], key=lambda x: (-x[0], x[1]))
+
+plate = [False] * n
+rst = []
 
 
-def dfs(value, num, now):
-    global visited, n, rst, graph
-    if all(v for v in visited):
-        if graph[num][now] != 0:
-            rst = min(rst, value + graph[num][now])
+def press(index):
+    global n, ground, plate, rst
 
-        return
-    for i in range(n):
-        if not visited[i] and graph[num][i] != 0:
-            visited[i] = True
-            dfs(value + graph[num][i], i, now)
-            visited[i] = False
+    rst += [index + 1]
+    left = right = index
+    plate[index] = True
+    l_flage = r_flage = True
+    while l_flage or r_flage:
+        left -= 1
+        right += 1
+        if 0 <= left and ground[left + 1] > ground[left] and not plate[left]:
+            plate[left] = True
+        else:
+            l_flage = False
+
+        if right < n and ground[right - 1] > ground[right] and not plate[right]:
+            plate[right] = True
+        else:
+            r_flage = False
+
+    if all(plate):
+        for r in sorted(rst):
+            print(r)
+        exit(0)
 
 
-for i in range(n):
-
-    visited[i] = True
-    dfs(0, i, i)
-    visited[i] = False
-print(rst)
+for p in prior:
+    if not plate[p[1]]:
+        press(p[1])
