@@ -4,10 +4,10 @@ sys.setrecursionlimit(10**9)
 
 
 def check(value, i):
-    global l, texts, visited, candidates
+    global texts, visited
     if not value:
         return True
-    if not visited[i] and value[-1] != texts[i] and value + texts[i] not in candidates:
+    if not visited[i] and value[-1] != texts[i]:
         return True
     return False
 
@@ -15,23 +15,21 @@ def check(value, i):
 texts = input()
 l = len(texts)
 candidates = set()
-rst = set()
+rst = 0
 visited = [False] * l
 
 
 def dfs(cnt, value):
     global l, candidates, texts, visited, rst
-    if value:
-        candidates.add(value)
     if cnt == l:
-        rst.add(value)
+        rst += 1
         return
     for i in range(l):
         if check(value, i):
             visited[i] = True
-            dfs(cnt + 1, value + texts[i])
+            dfs(cnt + 1, texts[i])
             visited[i] = False
 
 
 dfs(0, "")
-print(len(rst))
+print(rst)
