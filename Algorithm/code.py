@@ -1,39 +1,11 @@
+import itertools
 import sys
 
-sys.setrecursionlimit(10**6)
-rst = -1
-limit = 0
-arr = []
-visited = []
-n = 0
+# 순열 생성
+perm = itertools.permutations(range(50), 5)
 
+# 메모리 사용량 측정
+perm_list = list(perm)  # 모든 순열을 리스트로 변환하여 메모리 사용량 측정
+memory_usage = sys.getsizeof(perm_list) / (1024 * 1024)  # MB로 변환
 
-def dfs(value):
-    global rst, limit, arr, visited, n
-    if value != "" and int(value) >= limit:
-        return
-    if all(visited) and len(str(int(value))) == n:
-        rst = max(int(value), rst)
-        return
-    else:
-
-        for i in range(n):
-            if not visited[i]:
-                visited[i] = True
-                dfs(value + arr[i])
-                visited[i] = False
-
-
-def solution(num1, num2):
-    global limit, arr, visited, n
-    arr = num1
-    limit = int(num2)
-    n = len(num1)
-    visited = [False] * n
-    dfs("")
-    return rst
-
-
-a, b = map(str, input().split(" "))
-
-print(solution(a, b))
+print(f"메모리 사용량: {memory_usage:.2f} MB")
