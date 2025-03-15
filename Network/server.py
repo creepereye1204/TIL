@@ -1,60 +1,75 @@
-import enet
+import toga
+from toga.style import Pack
+from toga.widgets.box import Box
+from toga.widgets.canvas import Canvas
+from toga.widgets.button import Button
+from toga.widgets.webview import WebView
+import requests
 
+class MyApp(toga.App):
+    def startup(self):
+        self.main_window = toga.MainWindow(title="Drawing App", size=(800, 800))
 
-def start_server():
-    max_packet_size = 1500  # 최대 패킷 크기 설정
-    host = enet.Host(enet.Address(b"0.0.0.0", 24872), 32, 2, 0, max_packet_size)
-    print("서버가 실행 중입니다...")
+        # 웹뷰 생성
+        self.webview = WebView(url="https://blog.naver.com/goglkms/222088521207", style=Pack(flex=1))
 
-    while True:
-        event = host.service(1000)
+        # 캔버스 생성
+        self.canvas = Canvas(style=Pack(flex=1))
+        self.canvas.on_mouse_down = self.on_mouse_down
+        self.canvas.on_mouse_move = self.on_mouse_move
+        self.canvas.on_mouse_up = self.on_mouse_up
 
-        if event:
-            try:
-                if event.type == enet.EVENT_TYPE_RECEIVE:
-                    raw_data = event.packet.data
+        # 버튼 생성
+        fetch_html_button = Button("Fetch HTML", on_press=self.fetch_html, style=Pack(padding=10))
+        clear_button = Button("Clear Canvas", on_press=self.clear_canvas, style=Pack(padding=10))
 
-                    try:
-                        # 데이터 구조를 이해하고 필요한 부분을 추출
+        # 레이아웃 설정
+        box = Box(direction='column')
+        box.add(self.webview)
+        box.add(self.canvas)
+        box.add(fetch_html_button)
+        box.add(clear_button)
 
-                        message_length = int.from_bytes(raw_data[1:5], "little")  # little-endian
-                        message = raw_data[5 : 5 + message_length].decode("utf-8", errors="ignore")  # UTF-8로 디코딩
+        self.main_window.content = box
 
-                        print(f"수신한 채팅 메시지: {message}")
+        self.drawing = False
+        self.last_x = 0
+        self.last_y = 0
 
-                        # 클라이언트 정보
-                        client_address = event.peer
-                        client_id = dir(event.peer)
-                        print(f"클라이언트 주소: {client_address}, 패킷 정보: {client_id}")
+        self.main_window.show()
 
-                        # 클라이언트에게 응답 (필요한 경우)
-                        response_message = f"서버에서 수신한 메시지: {message}"
-                        response_packet = enet.Packet(response_message.encode("utf-8"))
-                        event.peer.send(0, response_packet)
-                        host.flush()
+    def fetch_html(self, widget):
+        url = "https://blog.naver.com/goglkms/222088521207"
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                html_content = response.text
+                print(html_content)  # HTML 내용을 출력합니다. 필요에 따라 처리할 수 있습니다.
+            else:
+                print(f"Error fetching HTML: {response.status_code}")
+        except Exception as e:
+            print(f"Exception occurred: {str(e)}")
 
-                    except UnicodeDecodeError as e:
-                        print(f"메시지 디코딩 오류: {e}, 수신한 데이터: {raw_data}")
-                    except Exception as e:
-                        print(f"오류 발생: {e}")
+    def on_mouse_down(self, widget, x, y):
+        self.drawing = True
+        self.last_x = x
+        self.last_y = y
 
-                elif event.type == enet.EVENT_TYPE_DISCONNECT:
-                    print(f"{event.peer.address}가 연결을 끊었습니다.")
-                elif event.type == 0:
-                    raw_data = event.packet.data
-                    message_length = int.from_bytes(raw_data[1:5], "little")  # little-endian
-                    message = raw_data[5 : 5 + message_length].decode("utf-8", errors="ignore")  # UTF-8로 디코딩
+    def on_mouse_move(self, widget, x, y):
+        if self.drawing:
+            self.canvas.draw_line(self.last_x, self.last_y, x, y, color=(0, 0, 0, 1), width=2)
+            self.last_x = x
+            self.last_y = y
 
-                    print(f"수신한 채팅 메시지: {message}")
+    def on_mouse_up(self, widget, x, y):
+        self.drawing = False
 
-            except Exception as e:
-                print(f"오류 발생: {e}")
+    def clear_canvas(self, widget):
+        self.canvas.clear()
 
+def main():
+    return MyApp('Drawing App', 'org.beeware.drawingapp')
 
 if __name__ == "__main__":
-    try:
-        start_server()
-    except KeyboardInterrupt:
-        print("서버가 종료되었습니다.")
-    except Exception as e:
-        print("오류 발생:", str(e))
+    app = main()
+    app.main_loop()

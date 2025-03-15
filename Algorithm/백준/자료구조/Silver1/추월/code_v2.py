@@ -8,6 +8,7 @@ for index in range(n):
 for _ in range(n):
     outs += [cars[input()]]
 
+
 for i in range(n):
     now = outs[i]
     for j in range(i + 1, n):
