@@ -1,75 +1,101 @@
-import toga
-from toga.style import Pack
-from toga.widgets.box import Box
-from toga.widgets.canvas import Canvas
-from toga.widgets.button import Button
-from toga.widgets.webview import WebView
-import requests
+import tkinter as tk
+import time
+import threading
+import pystray
+from PIL import Image, ImageDraw
 
-class MyApp(toga.App):
-    def startup(self):
-        self.main_window = toga.MainWindow(title="Drawing App", size=(800, 800))
+# 현재 시간을 업데이트하는 함수
+def update_time(label):
+    while True:
+        current_time = time.strftime('%H:%M:%S')
+        label.config(text=current_time)  # 레이블의 텍스트를 현재 시간으로 업데이트
+        time.sleep(1)  # 1초마다 업데이트
 
-        # 웹뷰 생성
-        self.webview = WebView(url="https://blog.naver.com/goglkms/222088521207", style=Pack(flex=1))
+# 드래그를 위한 변수
+dragging = False
+drag_start_x = 0
+drag_start_y = 0
 
-        # 캔버스 생성
-        self.canvas = Canvas(style=Pack(flex=1))
-        self.canvas.on_mouse_down = self.on_mouse_down
-        self.canvas.on_mouse_move = self.on_mouse_move
-        self.canvas.on_mouse_up = self.on_mouse_up
+def on_drag_start(event):
+    global dragging, drag_start_x, drag_start_y
+    dragging = True
+    drag_start_x = event.x
+    drag_start_y = event.y
 
-        # 버튼 생성
-        fetch_html_button = Button("Fetch HTML", on_press=self.fetch_html, style=Pack(padding=10))
-        clear_button = Button("Clear Canvas", on_press=self.clear_canvas, style=Pack(padding=10))
+def on_drag_motion(event):
+    global dragging
+    if dragging:
+        x = root.winfo_x() + (event.x - drag_start_x)
+        y = root.winfo_y() + (event.y - drag_start_y)
+        root.geometry(f"+{x}+{y}")
 
-        # 레이아웃 설정
-        box = Box(direction='column')
-        box.add(self.webview)
-        box.add(self.canvas)
-        box.add(fetch_html_button)
-        box.add(clear_button)
+def on_drag_end(event):
+    global dragging
+    dragging = False
 
-        self.main_window.content = box
+# GUI 창을 여는 함수
+def open_window():
+    global root
+    root = tk.Tk()
+    root.title("시계 위젯")
 
-        self.drawing = False
-        self.last_x = 0
-        self.last_y = 0
+    # 투명한 배경 설정
+    root.overrideredirect(True)  # 메뉴 바와 제목 표시줄을 숨김
+    root.wm_attributes("-alpha", 0.8)  # 배경 투명도 설정 (0.0 ~ 1.0)
+    root.wm_attributes("-transparentcolor", "white")  # 투명 색상 설정
 
-        self.main_window.show()
+    # 레이블 생성
+    label = tk.Label(root, font=("Helvetica", 48), fg="black", bg="white")  # 배경을 흰색으로 설정
+    label.pack()
 
-    def fetch_html(self, widget):
-        url = "https://blog.naver.com/goglkms/222088521207"
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                html_content = response.text
-                print(html_content)  # HTML 내용을 출력합니다. 필요에 따라 처리할 수 있습니다.
-            else:
-                print(f"Error fetching HTML: {response.status_code}")
-        except Exception as e:
-            print(f"Exception occurred: {str(e)}")
+    # 시간 업데이트 스레드 시작
+    threading.Thread(target=update_time, args=(label,), daemon=True).start()
 
-    def on_mouse_down(self, widget, x, y):
-        self.drawing = True
-        self.last_x = x
-        self.last_y = y
+    # 드래그 이벤트 바인딩
+    root.bind("<Button-1>", on_drag_start)
+    root.bind("<B1-Motion>", on_drag_motion)
+    root.bind("<ButtonRelease-1>", on_drag_end)
 
-    def on_mouse_move(self, widget, x, y):
-        if self.drawing:
-            self.canvas.draw_line(self.last_x, self.last_y, x, y, color=(0, 0, 0, 1), width=2)
-            self.last_x = x
-            self.last_y = y
+    # GUI 실행
+    root.mainloop()
 
-    def on_mouse_up(self, widget, x, y):
-        self.drawing = False
+# 아이콘 이미지를 생성하는 함수
+def create_image():
+    width = 64
+    height = 64
+    image = Image.new('RGB', (width, height), (255, 255, 255))
+    dc = ImageDraw.Draw(image)
 
-    def clear_canvas(self, widget):
-        self.canvas.clear()
+    # 아이콘에 시계 표시
+    dc.ellipse((0, 0, width, height), fill=(0, 0, 0))
+    return image
 
+# 프로그램 종료
+def exit_action(icon, item):
+    icon.stop()  # 아이콘 종료
+    if root is not None:
+        root.destroy()  # GUI 종료
+
+# 트레이 아이콘 클릭 이벤트
+def on_icon_click(icon, item):
+    open_window()  # GUI 창 열기
+
+# 메인 함수
 def main():
-    return MyApp('Drawing App', 'org.beeware.drawingapp')
+    global root
+    root = None  # 전역 변수로 GUI 창을 관리
+
+    # 시스템 트레이 아이콘 설정
+    icon = pystray.Icon("Clock")
+    icon.icon = create_image()
+    icon.title = "시계"
+    icon.menu = pystray.Menu(
+        pystray.MenuItem("Open", on_icon_click),  # 아이콘 클릭 시 GUI 열기
+        pystray.MenuItem("Exit", exit_action)  # 종료 메뉴
+    )
+
+    # 트레이 아이콘 실행
+    icon.run()
 
 if __name__ == "__main__":
-    app = main()
-    app.main_loop()
+    main()

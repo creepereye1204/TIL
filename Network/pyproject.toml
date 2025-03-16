@@ -9,6 +9,8 @@ readme = "README.md"
 python = ">=3.12,<3.13"
 toga = "^0.5.0"
 requests = "^2.32.3"
+pystray = "^0.19.5"
+pillow = "^11.1.0"
 
 
 
