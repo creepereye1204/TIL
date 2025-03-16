@@ -11,6 +11,7 @@ toga = "^0.5.0"
 requests = "^2.32.3"
 pystray = "^0.19.5"
 pillow = "^11.1.0"
+pyqt6 = "^6.8.1"
 
 
 

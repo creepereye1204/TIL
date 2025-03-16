@@ -1,101 +1,88 @@
-import tkinter as tk
+import sys
 import time
 import threading
-import pystray
-from PIL import Image, ImageDraw
+from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6.QtWidgets import QLabel, QSystemTrayIcon, QMenu, QApplication
 
-# 현재 시간을 업데이트하는 함수
-def update_time(label):
-    while True:
-        current_time = time.strftime('%H:%M:%S')
-        label.config(text=current_time)  # 레이블의 텍스트를 현재 시간으로 업데이트
-        time.sleep(1)  # 1초마다 업데이트
+class ClockWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
 
-# 드래그를 위한 변수
-dragging = False
-drag_start_x = 0
-drag_start_y = 0
+        # 투명한 배경 설정
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.WindowStaysOnTopHint)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NoSystemBackground)
 
-def on_drag_start(event):
-    global dragging, drag_start_x, drag_start_y
-    dragging = True
-    drag_start_x = event.x
-    drag_start_y = event.y
+        # 레이블 생성
+        self.label = QLabel(self)
+        self.label.setFont(QtGui.QFont("Helvetica", 48))
+        self.label.setStyleSheet("QLabel { background-color : white; color : black; }")
+        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-def on_drag_motion(event):
-    global dragging
-    if dragging:
-        x = root.winfo_x() + (event.x - drag_start_x)
-        y = root.winfo_y() + (event.y - drag_start_y)
-        root.geometry(f"+{x}+{y}")
+        # 레이아웃 설정
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
-def on_drag_end(event):
-    global dragging
-    dragging = False
+        # 시간 업데이트 스레드 시작
+        threading.Thread(target=self.update_time, daemon=True).start()
 
-# GUI 창을 여는 함수
-def open_window():
-    global root
-    root = tk.Tk()
-    root.title("시계 위젯")
+        # 드래그 이벤트 설정
+        self.startPos = None
+        self.setMouseTracking(True)
 
-    # 투명한 배경 설정
-    root.overrideredirect(True)  # 메뉴 바와 제목 표시줄을 숨김
-    root.wm_attributes("-alpha", 0.8)  # 배경 투명도 설정 (0.0 ~ 1.0)
-    root.wm_attributes("-transparentcolor", "white")  # 투명 색상 설정
+    def update_time(self):
+        while True:
+            current_time = time.strftime('%H:%M:%S')
+            self.label.setText(current_time)  # 레이블의 텍스트를 현재 시간으로 업데이트
+            time.sleep(1)  # 1초마다 업데이트
 
-    # 레이블 생성
-    label = tk.Label(root, font=("Helvetica", 48), fg="black", bg="white")  # 배경을 흰색으로 설정
-    label.pack()
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            # QPoint로 변환하여 연산
+            self.startPos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
 
-    # 시간 업데이트 스레드 시작
-    threading.Thread(target=update_time, args=(label,), daemon=True).start()
+    def mouseMoveEvent(self, event):
+        if self.startPos is not None:
+            self.move(event.globalPosition().toPoint() - self.startPos)
 
-    # 드래그 이벤트 바인딩
-    root.bind("<Button-1>", on_drag_start)
-    root.bind("<B1-Motion>", on_drag_motion)
-    root.bind("<ButtonRelease-1>", on_drag_end)
+    def mouseReleaseEvent(self, event):
+        self.startPos = None
 
-    # GUI 실행
-    root.mainloop()
 
-# 아이콘 이미지를 생성하는 함수
-def create_image():
-    width = 64
-    height = 64
-    image = Image.new('RGB', (width, height), (255, 255, 255))
-    dc = ImageDraw.Draw(image)
+class SystemTrayIcon(QSystemTrayIcon):
+    def __init__(self):
+        super().__init__()
 
-    # 아이콘에 시계 표시
-    dc.ellipse((0, 0, width, height), fill=(0, 0, 0))
-    return image
+        # 아이콘 생성
+        icon_path = "C:/Users/Desktop/Desktop/#5코딩/TIL/Network/clock_icon.png"  # 아이콘 파일 경로  # 아이콘 파일 경로
+        self.setIcon(QtGui.QIcon(icon_path))  # 아이콘 설정
+        self.setVisible(True)
 
-# 프로그램 종료
-def exit_action(icon, item):
-    icon.stop()  # 아이콘 종료
-    if root is not None:
-        root.destroy()  # GUI 종료
+        # 메뉴 설정
+        menu = QMenu()
+        open_action = menu.addAction("Open")
+        open_action.triggered.connect(self.open_clock_widget)
+        exit_action = menu.addAction("Exit")
+        exit_action.triggered.connect(QApplication.instance().quit)
+        self.setContextMenu(menu)
 
-# 트레이 아이콘 클릭 이벤트
-def on_icon_click(icon, item):
-    open_window()  # GUI 창 열기
+        # 클릭 이벤트 설정
+        self.activated.connect(self.on_activated)
 
-# 메인 함수
+    def on_activated(self, reason):
+        if reason == QSystemTrayIcon.ActivationReason.Trigger:
+            self.open_clock_widget()
+
+    def open_clock_widget(self):
+        self.clock_widget = ClockWidget()
+        self.clock_widget.show()
+
+
 def main():
-    global root
-    root = None  # 전역 변수로 GUI 창을 관리
-
-    # 시스템 트레이 아이콘 설정
-    icon = pystray.Icon("Clock")
-    icon.icon = create_image()
-    icon.title = "시계"
-    icon.menu = pystray.Menu(
-        pystray.MenuItem("Open", on_icon_click),  # 아이콘 클릭 시 GUI 열기
-        pystray.MenuItem("Exit", exit_action)  # 종료 메뉴
-    )
-
-    # 트레이 아이콘 실행
-    icon.run()
+    app = QApplication(sys.argv)
+    SystemTrayIcon()
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()
