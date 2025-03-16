@@ -1,5 +1,7 @@
+import os
 import sys
 import time
+
 import threading
 from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtWidgets import QLabel, QSystemTrayIcon, QMenu, QApplication
@@ -7,8 +9,8 @@ from PyQt6.QtWidgets import QLabel, QSystemTrayIcon, QMenu, QApplication
 class ClockWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-
-        # 투명한 배경 설정
+    
+ 
         self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NoSystemBackground)
@@ -16,7 +18,7 @@ class ClockWidget(QtWidgets.QWidget):
         # 레이블 생성
         self.label = QLabel(self)
         self.label.setFont(QtGui.QFont("Helvetica", 48))
-        self.label.setStyleSheet("QLabel { background-color : white; color : black; }")
+
         self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         # 레이아웃 설정
@@ -54,11 +56,13 @@ class SystemTrayIcon(QSystemTrayIcon):
     def __init__(self):
         super().__init__()
 
-        # 아이콘 생성
-        icon_path = "C:/Users/Desktop/Desktop/#5코딩/TIL/Network/clock_icon.png"  # 아이콘 파일 경로  # 아이콘 파일 경로
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # 아이콘 파일 경로 생성
+        icon_path = os.path.join(current_dir, 'clock_icon.png')
         self.setIcon(QtGui.QIcon(icon_path))  # 아이콘 설정
         self.setVisible(True)
-
+        self.is_activated=False
         # 메뉴 설정
         menu = QMenu()
         open_action = menu.addAction("Open")
@@ -75,13 +79,15 @@ class SystemTrayIcon(QSystemTrayIcon):
             self.open_clock_widget()
 
     def open_clock_widget(self):
-        self.clock_widget = ClockWidget()
-        self.clock_widget.show()
+        if not self.is_activated:
+            self.is_activated=True
+            self.clock_widget = ClockWidget()
+            self.clock_widget.show()
 
 
 def main():
     app = QApplication(sys.argv)
-    SystemTrayIcon()
+    tray_icon = SystemTrayIcon()
     sys.exit(app.exec())
 
 if __name__ == "__main__":
