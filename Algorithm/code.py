@@ -1,26 +1,22 @@
-import sys
-sys.setrecursionlimit(10**6)
-input=sys.stdin.readline
+from collections import deque
+def bfs(home_x,home_y,festival_x,festival_y,nodes,visited):
+    q=deque([[home_x,home_y]])
+    while q:
+        x,y=q.popleft()
+        if abs(festival_x-x)+abs(festival_y-y)<=1000:
+            return 'happy'
+        for node in nodes:
+            if abs(node[0]-x)+abs(node[1]-y)<=1000 and node not in visited:
+                visited.add(node)
+                q.append(node)
+    return 'sad'
 
-def dfs(parent,now):
-    global visited,tree
-    for child,dist in tree[parent]:
-        if visited[child]==-1:
-            visited[child]=now+dist
-            dfs(child,visited[child])
-
-n=int(input())
-tree=[[] for _ in range(n+1)]
-for _ in range(n-1):
-    parent,child,dist=map(int,input().split(' '))
-    tree[parent].append((child,dist))
-    tree[child].append((parent,dist))
-    
-visited=[-1]*(n+1)
-visited[1]=0
-dfs(1,0)
-start_node=visited.index(max(visited))
-visited=[-1]*(n+1)
-visited[start_node]=0
-dfs(start_node,0)
-print(max(visited))
+for _ in range(int(input())):
+    n=int(input())
+    home_x,home_y=map(int,input().split(' '))
+    nodes=[]
+    for _ in range(n):
+        x,y=map(int,input().split(' '))
+        nodes.append((x,y))
+    festival_x,festival_y=map(int,input().split(' '))
+    print(bfs(home_x,home_y,festival_x,festival_y,nodes,set()))

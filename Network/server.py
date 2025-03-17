@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-
+import yt_dlp
 import threading
 from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtWidgets import QLabel, QSystemTrayIcon, QMenu, QApplication
