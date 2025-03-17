@@ -1,75 +1,94 @@
-import toga
-from toga.style import Pack
-from toga.widgets.box import Box
-from toga.widgets.canvas import Canvas
-from toga.widgets.button import Button
-from toga.widgets.webview import WebView
-import requests
+import os
+import sys
+import time
+import yt_dlp
+import threading
+from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6.QtWidgets import QLabel, QSystemTrayIcon, QMenu, QApplication
 
-class MyApp(toga.App):
-    def startup(self):
-        self.main_window = toga.MainWindow(title="Drawing App", size=(800, 800))
+class ClockWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+    
+ 
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.WindowStaysOnTopHint)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NoSystemBackground)
 
-        # 웹뷰 생성
-        self.webview = WebView(url="https://blog.naver.com/goglkms/222088521207", style=Pack(flex=1))
+        # 레이블 생성
+        self.label = QLabel(self)
+        self.label.setFont(QtGui.QFont("Helvetica", 48))
 
-        # 캔버스 생성
-        self.canvas = Canvas(style=Pack(flex=1))
-        self.canvas.on_mouse_down = self.on_mouse_down
-        self.canvas.on_mouse_move = self.on_mouse_move
-        self.canvas.on_mouse_up = self.on_mouse_up
-
-        # 버튼 생성
-        fetch_html_button = Button("Fetch HTML", on_press=self.fetch_html, style=Pack(padding=10))
-        clear_button = Button("Clear Canvas", on_press=self.clear_canvas, style=Pack(padding=10))
+        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         # 레이아웃 설정
-        box = Box(direction='column')
-        box.add(self.webview)
-        box.add(self.canvas)
-        box.add(fetch_html_button)
-        box.add(clear_button)
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
-        self.main_window.content = box
+        # 시간 업데이트 스레드 시작
+        threading.Thread(target=self.update_time, daemon=True).start()
 
-        self.drawing = False
-        self.last_x = 0
-        self.last_y = 0
+        # 드래그 이벤트 설정
+        self.startPos = None
+        self.setMouseTracking(True)
 
-        self.main_window.show()
+    def update_time(self):
+        while True:
+            current_time = time.strftime('%H:%M:%S')
+            self.label.setText(current_time)  # 레이블의 텍스트를 현재 시간으로 업데이트
+            time.sleep(1)  # 1초마다 업데이트
 
-    def fetch_html(self, widget):
-        url = "https://blog.naver.com/goglkms/222088521207"
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                html_content = response.text
-                print(html_content)  # HTML 내용을 출력합니다. 필요에 따라 처리할 수 있습니다.
-            else:
-                print(f"Error fetching HTML: {response.status_code}")
-        except Exception as e:
-            print(f"Exception occurred: {str(e)}")
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            # QPoint로 변환하여 연산
+            self.startPos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
 
-    def on_mouse_down(self, widget, x, y):
-        self.drawing = True
-        self.last_x = x
-        self.last_y = y
+    def mouseMoveEvent(self, event):
+        if self.startPos is not None:
+            self.move(event.globalPosition().toPoint() - self.startPos)
 
-    def on_mouse_move(self, widget, x, y):
-        if self.drawing:
-            self.canvas.draw_line(self.last_x, self.last_y, x, y, color=(0, 0, 0, 1), width=2)
-            self.last_x = x
-            self.last_y = y
+    def mouseReleaseEvent(self, event):
+        self.startPos = None
 
-    def on_mouse_up(self, widget, x, y):
-        self.drawing = False
 
-    def clear_canvas(self, widget):
-        self.canvas.clear()
+class SystemTrayIcon(QSystemTrayIcon):
+    def __init__(self):
+        super().__init__()
+
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # 아이콘 파일 경로 생성
+        icon_path = os.path.join(current_dir, 'clock_icon.png')
+        self.setIcon(QtGui.QIcon(icon_path))  # 아이콘 설정
+        self.setVisible(True)
+        self.is_activated=False
+        # 메뉴 설정
+        menu = QMenu()
+        open_action = menu.addAction("Open")
+        open_action.triggered.connect(self.open_clock_widget)
+        exit_action = menu.addAction("Exit")
+        exit_action.triggered.connect(QApplication.instance().quit)
+        self.setContextMenu(menu)
+
+        # 클릭 이벤트 설정
+        self.activated.connect(self.on_activated)
+
+    def on_activated(self, reason):
+        if reason == QSystemTrayIcon.ActivationReason.Trigger:
+            self.open_clock_widget()
+
+    def open_clock_widget(self):
+        if not self.is_activated:
+            self.is_activated=True
+            self.clock_widget = ClockWidget()
+            self.clock_widget.show()
+
 
 def main():
-    return MyApp('Drawing App', 'org.beeware.drawingapp')
+    app = QApplication(sys.argv)
+    tray_icon = SystemTrayIcon()
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
-    app = main()
-    app.main_loop()
+    main()
