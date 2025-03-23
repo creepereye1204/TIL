@@ -1,5 +1,13 @@
-n = int(input())
-dp = list(range(n+1))
-for i in range(6, n+1):
-    dp[i] = max(dp[i-3]*2, dp[i-4]*3, dp[i-5]*4)
-print(dp[-1])
+t = int(input())
+for _ in range(t):
+
+    n = int(input())
+    p = list(map(int, input().split(' ')))
+    m = int(input())
+    dp = [0]*(m+1)
+    dp[0] = 1
+    for i in range(n):
+        for j in range(p[i], m+1):
+
+            dp[j] += dp[j-p[i]]
+    print(dp[-1])
