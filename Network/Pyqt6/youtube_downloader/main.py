@@ -5,11 +5,13 @@ from util import download  # 다운로드 함수를 가져옵니다.
 from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QSystemTrayIcon, QMenu, QApplication
 
+
 class DownloaderWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint |
+                            QtCore.Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NoSystemBackground)
 
@@ -40,15 +42,16 @@ class DownloaderWidget(QtWidgets.QWidget):
     def download_file(self):
         url = self.url_input.text()
         if url:
-            threading.Thread(target=self.download_url, args=(url,), daemon=True).start()
+            threading.Thread(target=self.download_url,
+                             args=(url,), daemon=True).start()
 
     def download_url(self, url):
         try:
             # 사용자 정의 다운로드 함수 호출
             download(url)  # download 함수가 파일명을 반환한다고 가정
-            
+
             self.label.setText("다운로드 완료!")
-            
+
         except Exception as e:
             self.label.setText(f"오류 발생: {str(e)}")
 
