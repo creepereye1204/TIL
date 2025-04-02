@@ -16,6 +16,7 @@ numba = "^0.61.0"
 yt-dlp = "^2025.2.19"
 ffmpeg = "^1.4"
 ffmpeg-python = "^0.2.0"
+opencv-python = "^4.11.0.86"
 
 
 

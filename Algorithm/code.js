@@ -1,3 +1,3 @@
-asd;
-
-sconst express = require("express");
+console.log("Hello World");
+console.log("Hello World");
+alert("Hello World");
