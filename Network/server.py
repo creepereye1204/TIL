@@ -1,94 +1,114 @@
+import cv2
+import numpy as np
 import os
-import sys
-import time
-import yt_dlp
 import threading
-from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6.QtWidgets import QLabel, QSystemTrayIcon, QMenu, QApplication
-
-class ClockWidget(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-    
- 
-        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.WindowStaysOnTopHint)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NoSystemBackground)
-
-        # 레이블 생성
-        self.label = QLabel(self)
-        self.label.setFont(QtGui.QFont("Helvetica", 48))
-
-        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-
-        # 레이아웃 설정
-        layout = QtWidgets.QVBoxLayout(self)
-        layout.addWidget(self.label)
-        self.setLayout(layout)
-
-        # 시간 업데이트 스레드 시작
-        threading.Thread(target=self.update_time, daemon=True).start()
-
-        # 드래그 이벤트 설정
-        self.startPos = None
-        self.setMouseTracking(True)
-
-    def update_time(self):
-        while True:
-            current_time = time.strftime('%H:%M:%S')
-            self.label.setText(current_time)  # 레이블의 텍스트를 현재 시간으로 업데이트
-            time.sleep(1)  # 1초마다 업데이트
-
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.MouseButton.LeftButton:
-            # QPoint로 변환하여 연산
-            self.startPos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
-
-    def mouseMoveEvent(self, event):
-        if self.startPos is not None:
-            self.move(event.globalPosition().toPoint() - self.startPos)
-
-    def mouseReleaseEvent(self, event):
-        self.startPos = None
 
 
-class SystemTrayIcon(QSystemTrayIcon):
-    def __init__(self):
-        super().__init__()
-
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # 아이콘 파일 경로 생성
-        icon_path = os.path.join(current_dir, 'clock_icon.png')
-        self.setIcon(QtGui.QIcon(icon_path))  # 아이콘 설정
-        self.setVisible(True)
-        self.is_activated=False
-        # 메뉴 설정
-        menu = QMenu()
-        open_action = menu.addAction("Open")
-        open_action.triggered.connect(self.open_clock_widget)
-        exit_action = menu.addAction("Exit")
-        exit_action.triggered.connect(QApplication.instance().quit)
-        self.setContextMenu(menu)
-
-        # 클릭 이벤트 설정
-        self.activated.connect(self.on_activated)
-
-    def on_activated(self, reason):
-        if reason == QSystemTrayIcon.ActivationReason.Trigger:
-            self.open_clock_widget()
-
-    def open_clock_widget(self):
-        if not self.is_activated:
-            self.is_activated=True
-            self.clock_widget = ClockWidget()
-            self.clock_widget.show()
+videoPath = input("Enter the path of the video: ")
+resultFps = int(input("Frames per second: "))
+resultHeight = int(input("Resolution (height): "))
+num_threads = int(input("Number of threads: "))
 
 
-def main():
-    app = QApplication(sys.argv)
-    tray_icon = SystemTrayIcon()
-    sys.exit(app.exec())
+cssFileName = "video.css"
 
-if __name__ == "__main__":
-    main()
+cap = cv2.VideoCapture(videoPath)
+success, frame = cap.read()
+
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+resultWidth = int(width * resultHeight / height)
+
+nbFrames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+videoFps = cap.get(cv2.CAP_PROP_FPS)
+videoDuration = round(nbFrames / videoFps)
+nbFramesResult = videoDuration * resultFps
+
+cssHeader = """
+#cssVideo {
+    position: sticky;
+    top: -1px;
+    left: -1px;
+    overflow: visible;
+    width: 1px;
+    height: 1px;
+    animation: cssVideo linear %ss both infinite;
+}
+
+@keyframes cssVideo {
+
+""" % (str(videoDuration))
+
+# Write the header to the CSS file initially
+with open(cssFileName, "w") as cssFile:
+    cssFile.write(cssHeader)
+
+
+def writeCssColors(frame):
+    resizedFrame = cv2.resize(frame, (resultWidth, resultHeight))
+    cssColors = []
+    for x in range(0, resultWidth):
+        for y in range(0, resultHeight):
+            cssColors.append(
+                f"{x}px {y}px 0 {'#%02x%02x%02x' % (resizedFrame[y, x, 2], resizedFrame[y, x, 1], resizedFrame[y, x, 0])},")
+    return cssColors
+
+
+def process_frames(start, end, thread_id):
+    cap = cv2.VideoCapture(videoPath)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, start)
+
+    with open(cssFileName, "a") as cssFile:  # Open the file in append mode
+        for i in range(start, end):
+            success, frame = cap.read()
+            if not success:
+                break
+
+            if i % round(nbFrames / nbFramesResult) == 0:
+                frameCss = "%s%% {box-shadow: " % (str(i * 100 / nbFrames))
+                cssColors = writeCssColors(frame)
+                frameCss += "".join(cssColors)[:-1] + ";}\n"
+
+                # Write CSS for the frame directly to the file
+                cssFile.write(frameCss)
+
+            if thread_id == num_threads - 1:
+                percentage_done = ((i - start) / (end - start)) * 100
+                print(f"Thread {thread_id}: {percentage_done:.2f}% done")
+
+    cap.release()
+
+
+threads = []
+frames_per_thread = nbFrames // num_threads
+
+for i in range(num_threads):
+    start_frame = i * frames_per_thread
+    end_frame = (i + 1) * frames_per_thread if i != num_threads - \
+        1 else nbFrames
+    thread = threading.Thread(target=process_frames,
+                              args=(start_frame, end_frame, i))
+    threads.append(thread)
+    thread.start()
+
+for thread in threads:
+    thread.join()
+
+# Finish the CSS file
+with open(cssFileName, "a") as cssFile:
+    cssFile.write("}")
+
+with open("index.html", "w") as htmlFile:
+    htmlFile.write(f"""
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Video</title>
+    <link rel="stylesheet" href="video.css">
+</head>
+<body>
+    <div style="scale: {resultHeight/10};" id="cssVideo"></div>
+</body>
+</html>
+    """)
