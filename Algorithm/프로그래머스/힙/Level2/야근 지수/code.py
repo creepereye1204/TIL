@@ -1,6 +1,7 @@
 import heapq
 def solution(n, works):
     answer = 0
+    
     q=[]
     for work in works:
         heapq.heappush(q,-work)
