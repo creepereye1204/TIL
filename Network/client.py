@@ -1,5 +1,5 @@
 import enet
-
+print("enet version:", enet.__version__)
 
 # 클라이언트 코드
 def start_client():
