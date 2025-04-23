@@ -1,4 +1,2 @@
-
-print
-
-print('start')
+pass
+pow
