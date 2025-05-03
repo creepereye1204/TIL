@@ -1,32 +1,29 @@
 def s1(m, n, board):
-    rst = set()
+    bingo = set()
     for i in range(m-1):
         for j in range(n-1):
             if board[i][j] == board[i+1][j+1] == board[i][j+1] == board[i+1][j] and board[i][j] != '.':
-                rst.update({(i, j), (i+1, j), (i, j+1), (i+1, j+1)})
-    return rst
+                bingo.update({(i, j), (i+1, j), (i, j+1), (i+1, j+1)})
+    return bingo
 
 
-def s2(temps, m, n, board):
+def s2(bingo, board, m):
 
-    for y, x in temps:
+    for y, x in bingo:
         board[y][x] = '.'
 
     for idx, line in enumerate(list(zip(*board))):
         temp = ''.join(list(line))
         cnt = temp.count('.')
         k = list(cnt*'.'+temp.replace('.', ''))
-        for o in range(len(list(zip(*board))[idx])):
-            board[o][idx] = k[o]
+        for i in range(m):
+            board[i][idx] = k[i]
+    return len(bingo)
 
 
 def solution(m, n, board):
     answer = 0
     board = list(map(list, board))
-
-    while True:
-        temp = s1(m, n, board)
-        answer += len(temp)
-        if not temp:
-            return answer
-        s2(temp, m, n, board)
+    while bingo := s1(m, n, board):
+        answer += s2(bingo, board, m)
+    return answer
