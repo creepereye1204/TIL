@@ -1,42 +1,30 @@
+import pandas as pd
 import numpy as np
 
+df = pd.DataFrame({
+    '이름': ['박보검', '아이유', '김선호', '이수경', '이준영', '박해준'],
+    '나이': [33, 32, 36, 25, 27, 45],
+    '신장': [183, 165, 180, 165, 178, 180],
+    '체중': [75, 55, 74, 58, 72, 78],
+    '혈액형': ['A', 'B', 'B', 'O', 'AB', 'B']
+})
 
-heights = [1.83, 1.76, 1.69, 1.77, 1.73]
-weights = [85.12, 74.13, 59.13, 80.12, 68.00]
+new_data = pd.DataFrame(
+    {'이름': '김용림', '나이': 86, '신장': 162, '체중': 75, '혈액형': 'AB'}, index=[6])
 
+df = pd.concat([df, new_data])
 
-np_heights = np.array(heights)
-np_weights = np.array(weights)
+df['소속사'] = ['SM', '쿠팡', '카카오', 'SM', 'JYP', 'SM', '무소속']
 
-
-np_bmis = np_weights / (np_heights ** 2)
-
-
-np_bmis_rounded = np.round(np_bmis, 2)
-
-
-obese_members = np_bmis >= 25
-
-
-num_obese = np.sum(obese_members)
-
-
-avg_height = np.mean(np_heights)
-avg_weight = np.mean(np_weights)
-
-
-avg_height_rounded = np.round(avg_height, 2)
-avg_weight_rounded = np.round(avg_weight, 2)
-
-
-print(f'신규회원들의 키\t\t\t:{" ".join(f"{h:.2f}" for h in np_heights)}')
-print(f'신규회원들의 평균 키\t\t:{avg_height_rounded:.2f}')
-
-print(f'신규회원들의 몸무게\t\t:{" ".join(f"{w:.2f}" for w in np_weights)}')
-print(f'신규회원들의 평균 몸무게\t:{avg_weight_rounded:.2f}')
-
-print(f'신규회원들의 BMI\t\t:{" ".join(f"{bmi:.2f}" for bmi in np_bmis_rounded)}')
-print(f'신규 회원자들의 평균 BMI\t:{np.round(np.mean(np_bmis), 2):.2f}')
-
-
-print(f'신규 회원 BMI 비만 대상자\t:{num_obese}명')
+df.rename(columns={'이름': '이  름'}, inplace=True)
+results = [list(df.columns)]+list(map(list, df.values))
+for result in results:
+    print('\t'.join(map(str, result)))
+print('='*49)
+print(f'A형 인원수: {len(df[df["혈액형"] == "A"])}명')
+print(f'AB형 인원수: {len(df[df["혈액형"] == "AB"])}명')
+print(f'B형 인원수: {len(df[df["혈액형"] == "B"])}명')
+print(f'O형 인원수: {len(df[df["혈액형"] == "O"])}명')
+print(f'평균 나이={np.average(df["나이"]):.2f}세')
+print(f'평균 신장={np.average(df["신장"]):.2f}cm')
+print(f'평균 체중={np.average(df["체중"]):.2f}kg')
