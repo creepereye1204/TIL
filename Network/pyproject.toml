@@ -18,6 +18,10 @@ ffmpeg = "^1.4"
 ffmpeg-python = "^0.2.0"
 opencv-python = "^4.11.0.86"
 numpy = "^2.2.4"
+lxml = "^5.4.0"
+beautifulsoup4 = "^4.13.4"
+seaborn = "^0.13.2"
+matplotlib = "^3.10.3"
 
 
 

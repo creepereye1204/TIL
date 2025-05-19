@@ -1,30 +1,35 @@
 import pandas as pd
-import numpy as np
+import requests
+import bs4
 
-df = pd.DataFrame({
-    '이름': ['박보검', '아이유', '김선호', '이수경', '이준영', '박해준'],
-    '나이': [33, 32, 36, 25, 27, 45],
-    '신장': [183, 165, 180, 165, 178, 180],
-    '체중': [75, 55, 74, 58, 72, 78],
-    '혈액형': ['A', 'B', 'B', 'O', 'AB', 'B']
-})
+URL = 'https://finance.naver.com/marketindex/?tabSel=exchange#tab_section'
+HEADERS = {
+    "USER-AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"}
+try:
 
-new_data = pd.DataFrame(
-    {'이름': '김용림', '나이': 86, '신장': 162, '체중': 75, '혈액형': 'AB'}, index=[6])
+    response = requests.get(URL, headers=HEADERS)
+    response.raise_for_status()
 
-df = pd.concat([df, new_data])
+    soup = bs4.BeautifulSoup(response.text, 'html.parser')
 
-df['소속사'] = ['SM', '쿠팡', '카카오', 'SM', 'JYP', 'SM', '무소속']
+    data_list = []
+    country_list = set()
+    for value in soup.find_all('option'):
 
-df.rename(columns={'이름': '이  름'}, inplace=True)
-results = [list(df.columns)]+list(map(list, df.values))
-for result in results:
-    print('\t'.join(map(str, result)))
-print('='*49)
-print(f'A형 인원수: {len(df[df["혈액형"] == "A"])}명')
-print(f'AB형 인원수: {len(df[df["혈액형"] == "AB"])}명')
-print(f'B형 인원수: {len(df[df["혈액형"] == "B"])}명')
-print(f'O형 인원수: {len(df[df["혈액형"] == "O"])}명')
-print(f'평균 나이={np.average(df["나이"]):.2f}세')
-print(f'평균 신장={np.average(df["신장"]):.2f}cm')
-print(f'평균 체중={np.average(df["체중"]):.2f}kg')
+        country = value.text.strip().split(' ')
+        country = country[0] + ' ' + country[2]
+        sale = value.get('value')
+
+        if country and sale is not None and country != '대한민국 KRW' and country not in country_list:
+            data_list.append({'국가명': country, '환율': sale})
+            country_list.add(country)
+
+    df = pd.DataFrame(data_list)
+
+    print(df.head(10))
+    df.to_csv('환율정보.csv', encoding='utf-8-sig', index=False)
+
+except requests.exceptions.RequestException as e:
+    print(f"웹 페이지 요청 중 오류 발생: {e}")
+except Exception as e:
+    print(f"데이터 처리 중 오류 발생: {e}")
